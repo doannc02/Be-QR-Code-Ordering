@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace OrderEats.Library.Application.Interfaces
+{
+    public interface IAccountTokenRepository
+    {
+        //Task<Account>
+    }
+}
