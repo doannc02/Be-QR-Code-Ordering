@@ -1,0 +1,36 @@
+name: ASP.NET Core CI/CD for Render
+
+on:
+  push:
+    branches:
+      - master  
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out mã nguồn từ repo
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Cài đặt .NET SDK
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0'  
+
+      # Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # Build dự án
+      - name: Build
+        run: dotnet build --configuration Release
+
+      # Run tests (nếu có)
+     # - name: Run tests
+        #run: dotnet test --configuration Release
+
+      - name: Publish
+        run: dotnet publish --configuration Release --output ./publish
