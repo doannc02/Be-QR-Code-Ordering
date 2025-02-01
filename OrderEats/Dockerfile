@@ -1,36 +1,19 @@
-name: ASP.NET Core CI/CD for Render
+# Sử dụng .NET SDK image để build ứng dụng
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["OrderEats/OrderEats.csproj", "OrderEats/"]
+RUN dotnet restore "OrderEats/OrderEats.csproj"
+COPY . .
+WORKDIR "/src/OrderEats"
+RUN dotnet build "OrderEats.csproj" -c Release -o /app/build
 
-on:
-  push:
-    branches:
-      - master  
+# Publish ứng dụng
+FROM build AS publish
+RUN dotnet publish "OrderEats.csproj" -c Release -o /app/publish
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      # Check out mã nguồn từ repo
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      # Cài đặt .NET SDK
-      - name: Set up .NET Core
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '6.0'  
-
-      # Restore dependencies
-      - name: Restore dependencies
-        run: dotnet restore
-
-      # Build dự án
-      - name: Build
-        run: dotnet build --configuration Release
-
-      # Run tests (nếu có)
-     # - name: Run tests
-        #run: dotnet test --configuration Release
-
-      - name: Publish
-        run: dotnet publish --configuration Release --output ./publish
+# Kết hợp và chỉ định lệnh để chạy ứng dụng
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+WORKDIR /app
+EXPOSE 80
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "OrderEats.dll"]
