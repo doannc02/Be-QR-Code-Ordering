@@ -3,7 +3,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 
 # Copy file .csproj vào đúng thư mục
-COPY ["OrderEats/OrderEats.csproj", "./"]
+COPY ["BE-QR-Code-Ordering/OrderEats/OrderEats.csproj", "./"]
 
 # Thực hiện restore project
 RUN dotnet restore "OrderEats/OrderEats.csproj"
