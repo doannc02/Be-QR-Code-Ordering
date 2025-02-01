@@ -1,9 +1,17 @@
 # Sử dụng .NET SDK image để build ứng dụng
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["OrderEats.csproj", "./"]
+
+# Copy file .csproj vào đúng thư mục
+COPY ["OrderEats/OrderEats.csproj", "./"]
+
+# Thực hiện restore project
 RUN dotnet restore "OrderEats/OrderEats.csproj"
+
+# Sao chép toàn bộ mã nguồn
 COPY . .
+
+# Chuyển đến thư mục chứa mã nguồn của OrderEats
 WORKDIR "/src/OrderEats"
 RUN dotnet build "OrderEats.csproj" -c Release -o /app/build
 
