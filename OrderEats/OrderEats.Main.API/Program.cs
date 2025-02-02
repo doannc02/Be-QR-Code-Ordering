@@ -7,6 +7,7 @@ using OrderEats.Library.Application.Services;
 using OrderEats.Library.Application.Mappers;
 using OrderEats.Main.API.Services;
 using OrderEats.Library.Application.Mapper;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,7 +28,8 @@ builder.Services.AddSignalR();
 
 // 🟢 Kiểm tra và lấy Connection String từ biến môi trường hoặc cấu hình
 var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
-                   //   ?? builder.Configuration.GetConnectionString("DefaultConnection");
+//   ?? builder.Configuration.GetConnectionString("DefaultConnection");
+Console.WriteLine($"Connection String: {connectionString}");
 
 if (string.IsNullOrEmpty(connectionString))
 {
