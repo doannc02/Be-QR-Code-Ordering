@@ -5,36 +5,44 @@ using OrderEats.Library.Common.Extension;
 using OrderEats.Library.Infrastructure.Repository;
 using OrderEats.Library.Application.Services;
 using OrderEats.Library.Application.Mappers;
-using OrderEats.Library.Application.Mapper;
 using OrderEats.Main.API.Services;
+using OrderEats.Library.Application.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Cấu hình CORS trước khi gọi app.Build()
+// 🟢 Cấu hình CORS trước khi gọi app.Build()
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowLocalhost",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:3000") // Địa chỉ frontend
-                  .AllowAnyMethod()
-                  .AllowAnyHeader()
-                  .AllowCredentials();
-        });
+    options.AddPolicy("AllowLocalhost", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000") // Địa chỉ frontend
+              .AllowAnyMethod()
+              .AllowAnyHeader()
+              .AllowCredentials();
+    });
 });
 
-// Thêm SignalR
+// 🟢 Thêm SignalR
 builder.Services.AddSignalR();
 
-// Thêm DbContext
+// 🟢 Kiểm tra và lấy Connection String từ biến môi trường hoặc cấu hình
+var connectionString = Environment.GetEnvironmentVariable("CONNECTION_STRING");
+                   //   ?? builder.Configuration.GetConnectionString("DefaultConnection");
+
+if (string.IsNullOrEmpty(connectionString))
+{
+    throw new InvalidOperationException("Database connection string is not set.");
+}
+
+// 🟢 Thêm DbContext
 builder.Services.AddDbContext<OrderEatsDbContext>(options =>
     options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection")),
-        b => b.MigrationsAssembly("OrderEats.Library.Models")
+        connectionString,
+        ServerVersion.AutoDetect(connectionString),
+        b => b.MigrationsAssembly("OrderEats.Library.Infrastructure")
     ));
 
-// Thêm các service khác
+// 🟢 Đăng ký Repository và Service
 builder.Services.AddScoped<IGenercRepository<Order>, GenericRepository<Order>>();
 builder.Services.AddScoped<IGenercRepository<Category>, GenericRepository<Category>>();
 builder.Services.AddScoped<OrderMapper>();
@@ -43,9 +51,11 @@ builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IFoodItemRepository, FoodItemRepository>();
 builder.Services.AddScoped<FoodItemMapper>();
 builder.Services.AddScoped<IFoodItemService, FoodItemService>();
-builder.Services.AddScoped<ITableRepository,TableRepository>();
+builder.Services.AddScoped<ITableRepository, TableRepository>();
 builder.Services.AddScoped<ITableService, TableService>();
 builder.Services.AddScoped<TableMapper>();
+
+// 🟢 Thêm Middleware cần thiết
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -53,18 +63,17 @@ builder.Services.AddCustomSwagger();
 
 var app = builder.Build();
 
-// Cấu hình Swagger cho môi trường phát triển
+// 🟢 Cấu hình Swagger cho môi trường phát triển
 if (app.Environment.IsDevelopment())
 {
     app.UseCustomSwagger();
 }
 
-// Configure the HTTP request pipeline
+// 🟢 Middleware Pipeline
 app.UseHttpsRedirection();
-app.UseAuthorization();
-
-// Sử dụng CORS trước khi các middleware khác
+app.UseRouting(); // 🔹 Thêm dòng này để middleware chạy đúng thứ tự
 app.UseCors("AllowLocalhost");
+app.UseAuthorization();
 
 app.MapControllers();
 app.MapHub<OrderHub>("/orderHub");
