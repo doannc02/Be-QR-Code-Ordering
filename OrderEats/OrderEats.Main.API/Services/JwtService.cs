@@ -33,7 +33,7 @@ namespace OrderEats.Main.API.Services
                 issuer: _config["JWT:Issuer"],
                 audience: _config["JWT:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(_config["JWT:AccessTokenExpiryMinutes"])),
+                expires: DateTime.UtcNow.AddHours(Convert.ToDouble(_config["JWT:AccessTokenExpiry"])),
                 signingCredentials: credentials
             );
 
