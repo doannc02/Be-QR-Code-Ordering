@@ -20,9 +20,9 @@ obj/
 # ASP.NET Scaffolding
 .scaffolding
 
-# Configuration files
-appsettings.json
-appsettings.*.json
+# # Configuration files
+# appsettings.json
+# appsettings.*.json
 
 # Entity Framework Migrations
 Migrations/
