@@ -19,7 +19,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost", policy =>
     {
-        policy.WithOrigins("http://localhost:3000", "https://be-qr-code-ordering.onrender.com") // Địa chỉ frontend
+        policy.WithOrigins("http://localhost:3000", "https://fe-qr-code-ordering.vercel.app") 
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
