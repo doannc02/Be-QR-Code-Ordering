@@ -14,8 +14,8 @@ namespace OrderEats.Library.Models.Entities
         public string State { get; set; }
         public string ZipCode { get; set; }
         public string Country { get; set; }
-        public int UserId { get; set; }
-       // public User User { get; set; }
+        public long UserId { get; set; }
+        public User User { get; set; }
     }
 
 }

@@ -26,6 +26,7 @@ namespace OrderEats.Library.Models.Entities
         public DbSet<Table> Tables { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<Address> Addresses { get; set; }
+        public DbSet<User> User { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -150,6 +151,50 @@ namespace OrderEats.Library.Models.Entities
                 .Property(a => a.ZipCode)
                 .IsRequired()
                 .HasMaxLength(10);
+
+            modelBuilder.Entity<Address>()
+             .HasOne(a => a.User)
+             .WithMany(u => u.Addresses)
+             .HasForeignKey(a => a.UserId)
+             .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<User>()
+                .ToTable("User")
+                .HasKey(a => a.Id);
+
+
+            modelBuilder.Entity<User>()
+                .Property(a => a.Avatar)
+                .HasMaxLength(200);
+
+            modelBuilder.Entity<User>()
+                .Property(a => a.Role)
+                .IsRequired()
+                .HasConversion<string>()
+                .HasMaxLength(10);
+
+            modelBuilder.Entity<User>()
+               .Property(a => a.Email)
+               .IsRequired()
+               .HasMaxLength(70);
+
+            modelBuilder.Entity<User>()
+               .Property(a => a.FullName)
+               .IsRequired()
+               .HasMaxLength(90);
+
+            modelBuilder.Entity<User>()
+                .Property(a => a.Phone)
+                .HasMaxLength(10);
+
+            modelBuilder.Entity<User>()
+               .Property(a => a.PasswordHash)
+               .IsRequired()
+               .HasMaxLength(275); 
+
+            modelBuilder.Entity<User>()
+               .Property(a => a.IsActived)
+               .HasDefaultValue(false); 
         }
     }
 }

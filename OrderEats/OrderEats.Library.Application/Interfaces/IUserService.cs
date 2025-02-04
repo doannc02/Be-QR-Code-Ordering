@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace OrderEats.Library.Application.Interfaces
 {
-    internal interface IUserService
+    public interface IUserService
     {
+   
     }
 }

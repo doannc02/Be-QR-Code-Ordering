@@ -19,7 +19,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowLocalhost", policy =>
     {
-        policy.WithOrigins("http://localhost:3000") // Địa chỉ frontend
+        policy.WithOrigins("http://localhost:3000", "https://be-qr-code-ordering.onrender.com") // Địa chỉ frontend
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
@@ -44,7 +44,7 @@ builder.Services.AddDbContext<OrderEatsDbContext>(options =>
     options.UseMySql(
         connectionString,
         ServerVersion.AutoDetect(connectionString),
-        b => b.MigrationsAssembly("OrderEats.Library.Infrastructure")
+        b => b.MigrationsAssembly("OrderEats.Library.Models")
     ));
 
 
